@@ -28,8 +28,18 @@ fn generate_client(spec: &OpenAPI) -> String {
         "crate::error::MessageType",
         ["Default".parse().unwrap()].into_iter(),
     );
+    settings.with_pre_hook_mut(ADD_SENTRY_HEADERS_SRC.parse().unwrap());
     let mut generator = progenitor::Generator::new(&settings);
     let tokens = generator.generate_tokens(spec).unwrap();
     let ast = syn::parse2(tokens).unwrap();
     prettyplease::unparse(&ast)
 }
+
+const ADD_SENTRY_HEADERS_SRC: &str = "|request: &mut reqwest::Request| {
+    if let Some(span) = sentry::configure_scope(|scope| scope.get_span()) {
+        let headers = request.headers_mut();
+        for (k, v) in span.iter_headers() {
+            headers.insert(k, HeaderValue::from_str(&v).unwrap());
+        }
+    }
+}";

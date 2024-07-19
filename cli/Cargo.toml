@@ -77,6 +77,6 @@ temp-env = "0.3.2"
 
 # build(.rs) dependencies
 prettyplease = "0.2"
-progenitor = "0.6"
+progenitor = { path = "/Users/zmitchell/code/progenitor/main/progenitor" }
 syn = "2.0"
 openapiv3 = "2.0"

@@ -1902,6 +1902,14 @@ Sends a `GET` request to `/api/v1/catalog/search`
             )
             .query(&query)
             .build()?;
+        (|request: &mut reqwest::Request| {
+            if let Some(span) = sentry::configure_scope(|scope| scope.get_span()) {
+                let headers = request.headers_mut();
+                for (k, v) in span.iter_headers() {
+                    headers.insert(k, HeaderValue::from_str(&v).unwrap());
+                }
+            }
+        })(&mut request);
         let result = self.client.execute(request).await;
         let response = result?;
         match response.status().as_u16() {
@@ -1956,6 +1964,14 @@ Sends a `GET` request to `/api/v1/catalog/packages/{attr_path}`
             )
             .query(&query)
             .build()?;
+        (|request: &mut reqwest::Request| {
+            if let Some(span) = sentry::configure_scope(|scope| scope.get_span()) {
+                let headers = request.headers_mut();
+                for (k, v) in span.iter_headers() {
+                    headers.insert(k, HeaderValue::from_str(&v).unwrap());
+                }
+            }
+        })(&mut request);
         let result = self.client.execute(request).await;
         let response = result?;
         match response.status().as_u16() {
@@ -2023,6 +2039,14 @@ Sends a `POST` request to `/api/v1/catalog/resolve`
             )
             .json(&body)
             .build()?;
+        (|request: &mut reqwest::Request| {
+            if let Some(span) = sentry::configure_scope(|scope| scope.get_span()) {
+                let headers = request.headers_mut();
+                for (k, v) in span.iter_headers() {
+                    headers.insert(k, HeaderValue::from_str(&v).unwrap());
+                }
+            }
+        })(&mut request);
         let result = self.client.execute(request).await;
         let response = result?;
         match response.status().as_u16() {
@@ -2056,6 +2080,14 @@ Sends a `GET` request to `/api/v1/status/catalog`
                 reqwest::header::HeaderValue::from_static("application/json"),
             )
             .build()?;
+        (|request: &mut reqwest::Request| {
+            if let Some(span) = sentry::configure_scope(|scope| scope.get_span()) {
+                let headers = request.headers_mut();
+                for (k, v) in span.iter_headers() {
+                    headers.insert(k, HeaderValue::from_str(&v).unwrap());
+                }
+            }
+        })(&mut request);
         let result = self.client.execute(request).await;
         let response = result?;
         match response.status().as_u16() {
@@ -2089,6 +2121,14 @@ Sends a `GET` request to `/api/v1/status/service`
                 reqwest::header::HeaderValue::from_static("application/json"),
             )
             .build()?;
+        (|request: &mut reqwest::Request| {
+            if let Some(span) = sentry::configure_scope(|scope| scope.get_span()) {
+                let headers = request.headers_mut();
+                for (k, v) in span.iter_headers() {
+                    headers.insert(k, HeaderValue::from_str(&v).unwrap());
+                }
+            }
+        })(&mut request);
         let result = self.client.execute(request).await;
         let response = result?;
         match response.status().as_u16() {
@@ -2117,6 +2157,14 @@ Sends a `GET` request to `/api/v1/status/sentry-debug`
                 reqwest::header::HeaderValue::from_static("application/json"),
             )
             .build()?;
+        (|request: &mut reqwest::Request| {
+            if let Some(span) = sentry::configure_scope(|scope| scope.get_span()) {
+                let headers = request.headers_mut();
+                for (k, v) in span.iter_headers() {
+                    headers.insert(k, HeaderValue::from_str(&v).unwrap());
+                }
+            }
+        })(&mut request);
         let result = self.client.execute(request).await;
         let response = result?;
         match response.status().as_u16() {
@@ -2158,6 +2206,14 @@ Sends a `POST` request to `/api/v1/settings/settings/{key}`
             )
             .query(&query)
             .build()?;
+        (|request: &mut reqwest::Request| {
+            if let Some(span) = sentry::configure_scope(|scope| scope.get_span()) {
+                let headers = request.headers_mut();
+                for (k, v) in span.iter_headers() {
+                    headers.insert(k, HeaderValue::from_str(&v).unwrap());
+                }
+            }
+        })(&mut request);
         let result = self.client.execute(request).await;
         let response = result?;
         match response.status().as_u16() {
@@ -2186,6 +2242,14 @@ Sends a `GET` request to `/metrics/`
                 reqwest::header::HeaderValue::from_static("application/json"),
             )
             .build()?;
+        (|request: &mut reqwest::Request| {
+            if let Some(span) = sentry::configure_scope(|scope| scope.get_span()) {
+                let headers = request.headers_mut();
+                for (k, v) in span.iter_headers() {
+                    headers.insert(k, HeaderValue::from_str(&v).unwrap());
+                }
+            }
+        })(&mut request);
         let result = self.client.execute(request).await;
         let response = result?;
         match response.status().as_u16() {
