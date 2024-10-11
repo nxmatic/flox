@@ -61,7 +61,7 @@ impl fmt::Display for PreReleaseName {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct FloxVersion {
     major: u32,
     minor: u32,
@@ -95,7 +95,7 @@ impl FromStr for FloxVersion {
             (?:-(?P<pre>(?P<pre_name>[a-zA-Z]+)\.(?P<pre_number>\d+)))? # Optionally match pre-release name and number (e.g., rc.1)
             (?:-(?P<num_of_commits>\d+))?                          # Optionally match number of commits
             (?:-(?P<commit_vcs>[a-z])(?P<commit_sha>[a-f0-9]+))?   # Optionally match VCS and SHA
-        $").unwrap();
+        $").unwrap();  // Unwrap is safe here because the regex is a constant
 
         // Apply the regex to the version string
         if let Some(captures) = re.captures(version_str) {
@@ -138,19 +138,6 @@ impl FromStr for FloxVersion {
         } else {
             Err(VersionParseError::InvalidFormat)
         }
-    }
-}
-
-impl PartialEq for FloxVersion {
-    fn eq(&self, other: &Self) -> bool {
-        self.major == other.major
-            && self.minor == other.minor
-            && self.patch == other.patch
-            && self.pre_name == other.pre_name
-            && self.pre_number == other.pre_number
-            && self.num_of_commits == other.num_of_commits
-            && self.commit_vcs == other.commit_vcs
-            && self.commit_sha == other.commit_sha
     }
 }
 
@@ -242,41 +229,53 @@ mod tests {
 
     #[test]
     fn test_parse_standard_version() {
-        let version: FloxVersion = "1.2.3".parse().unwrap();
-        assert_eq!(version.major, 1);
-        assert_eq!(version.minor, 2);
-        assert_eq!(version.patch, 3);
-        assert!(version.pre_name.is_none());
-        assert!(version.pre_number.is_none());
-        assert!(version.num_of_commits.is_none());
-        assert!(version.commit_vcs.is_none());
-        assert!(version.commit_sha.is_none());
+        let version_str = "1.2.3";
+        let version: FloxVersion = version_str.parse().unwrap();
+        assert_eq!(version, FloxVersion {
+            major: 1,
+            minor: 2,
+            patch: 3,
+            pre_name: None,
+            pre_number: None,
+            num_of_commits: None,
+            commit_vcs: None,
+            commit_sha: None,
+        });
+        assert_eq!(version.to_string(), version_str);
     }
 
     #[test]
     fn test_parse_version_with_pre_release() {
-        let version: FloxVersion = "1.2.3-rc.1".parse().unwrap();
-        assert_eq!(version.major, 1);
-        assert_eq!(version.minor, 2);
-        assert_eq!(version.patch, 3);
-        assert_eq!(version.pre_name, Some(PreReleaseName::RC));
-        assert_eq!(version.pre_number, Some(1));
-        assert!(version.num_of_commits.is_none());
-        assert!(version.commit_vcs.is_none());
-        assert!(version.commit_sha.is_none());
+        let version_str = "1.2.3-rc.1";
+        let version: FloxVersion = version_str.parse().unwrap();
+        assert_eq!(version, FloxVersion {
+            major: 1,
+            minor: 2,
+            patch: 3,
+            pre_name: Some(PreReleaseName::RC),
+            pre_number: Some(1),
+            num_of_commits: None,
+            commit_vcs: None,
+            commit_sha: None,
+        });
+        assert_eq!(version.to_string(), version_str);
     }
 
     #[test]
     fn test_parse_version_with_git_describe_format() {
-        let version: FloxVersion = "1.2.3-21-gb91c3f1".parse().unwrap();
-        assert_eq!(version.major, 1);
-        assert_eq!(version.minor, 2);
-        assert_eq!(version.patch, 3);
-        assert!(version.pre_name.is_none());
-        assert!(version.pre_number.is_none());
-        assert_eq!(version.num_of_commits, Some(21));
-        assert_eq!(version.commit_vcs, Some('g'));
-        assert_eq!(version.commit_sha, Some("b91c3f1".to_string()));
+        let version_str = "1.2.3-21-gb91c3f1";
+        let version: FloxVersion = version_str.parse().unwrap();
+        assert_eq!(version, FloxVersion {
+            major: 1,
+            minor: 2,
+            patch: 3,
+            pre_name: None,
+            pre_number: None,
+            num_of_commits: Some(21),
+            commit_vcs: Some('g'),
+            commit_sha: Some("b91c3f1".to_string()),
+        });
+        assert_eq!(version.to_string(), version_str);
     }
 
     #[test]
@@ -289,15 +288,19 @@ mod tests {
 
     #[test]
     fn test_parse_version_with_only_commit_sha() {
-        let version: FloxVersion = "1.2.3-gb91c3f1".parse().unwrap();
-        assert_eq!(version.major, 1);
-        assert_eq!(version.minor, 2);
-        assert_eq!(version.patch, 3);
-        assert!(version.pre_name.is_none());
-        assert!(version.pre_number.is_none());
-        assert_eq!(version.commit_vcs, Some('g'));
-        assert_eq!(version.commit_sha, Some("b91c3f1".to_string()));
-        assert!(version.num_of_commits.is_none());
+        let version_str = "1.2.3-gb91c3f1";
+        let version: FloxVersion = version_str.parse().unwrap();
+        assert_eq!(version, FloxVersion {
+            major: 1,
+            minor: 2,
+            patch: 3,
+            pre_name: None,
+            pre_number: None,
+            num_of_commits: None,
+            commit_vcs: Some('g'),
+            commit_sha: Some("b91c3f1".to_string()),
+        });
+        assert_eq!(version.to_string(), version_str);
     }
 
     #[test]
