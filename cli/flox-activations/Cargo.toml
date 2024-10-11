@@ -9,12 +9,14 @@ clap = { version = "4.5.19", default-features = false, features = ["std","usage"
 clap_derive.workspace = true
 flox-core.workspace = true
 fslock.workspace = true
+nix.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 time.workspace = true
 tracing.workspace = true
 uuid.workspace = true
 xdg.workspace = true
+indoc.workspace = true
 
 
 [dev-dependencies]
