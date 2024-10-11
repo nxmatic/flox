@@ -308,12 +308,7 @@ impl Activate {
             // Export FLOX_ENV_DESCRIPTION for this environment and let the
             // activation script take care of tracking active environments
             // and invoking the appropriate script to set the prompt.
-            (
-                FLOX_ENV_DESCRIPTION_VAR,
-                now_active
-                    .bare_description()
-                    .expect("`bare_description` is infallible"),
-            ),
+            (FLOX_ENV_DESCRIPTION_VAR, now_active.message_description()?),
         ]);
 
         if is_ephemeral {
