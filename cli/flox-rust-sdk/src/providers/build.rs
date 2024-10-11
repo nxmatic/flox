@@ -749,7 +749,17 @@ mod tests {
             .join("bin")
             .join(&file_name);
 
-        let output = Command::new(&result_path).output().unwrap();
+        fs::write(env_path.join("hello"), indoc! {r#"
+            #!/usr/bin/env bash
+            echo "This should not be used because the environment's PATH takes precedence"
+            exit 1
+        "#})
+        .unwrap();
+
+        let output = Command::new(&result_path)
+            .env("PATH", env_path)
+            .output()
+            .unwrap();
         assert!(output.status.success());
         assert_eq!(
             String::from_utf8_lossy(&output.stdout).trim_end(),
