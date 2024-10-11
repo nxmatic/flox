@@ -1999,7 +1999,7 @@ mod tests {
 
         let result = UpdateNotification::check_for_update_inner(
             notification_file.clone(),
-            async { Ok("0.0.0".to_string()) },
+            async { Ok("1000.0.0".to_string()) },
             UPDATE_NOTIFICATION_EXPIRY,
         )
         .await;
@@ -2008,7 +2008,7 @@ mod tests {
             result.unwrap(),
             UpdateCheckResult::UpdateAvailable(UpdateNotification {
                 notification_file,
-                new_version: "0.0.0".to_string()
+                new_version: "1000.0.0".to_string()
             })
         );
     }

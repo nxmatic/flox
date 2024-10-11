@@ -187,7 +187,10 @@ impl PartialOrd for FloxVersion {
         }
 
         // Skip commit comparison if there are pre-release fields
-        None
+        match (self.commit_vcs, other.commit_vcs) {
+            (None, None) => return Some(Ordering::Equal),
+            _ => return None,
+        }
     }
 }
 
@@ -242,6 +245,7 @@ mod tests {
             commit_sha: None,
         });
         assert_eq!(version.to_string(), version_str);
+        assert_eq!(version.partial_cmp(&version), Some(Ordering::Equal));
     }
 
     #[test]
@@ -259,6 +263,7 @@ mod tests {
             commit_sha: None,
         });
         assert_eq!(version.to_string(), version_str);
+        assert_eq!(version.partial_cmp(&version), Some(Ordering::Equal));
     }
 
     #[test]
@@ -276,6 +281,7 @@ mod tests {
             commit_sha: Some("b91c3f1".to_string()),
         });
         assert_eq!(version.to_string(), version_str);
+        assert_eq!(version.partial_cmp(&version), Some(Ordering::Equal));
     }
 
     #[test]
@@ -301,6 +307,7 @@ mod tests {
             commit_sha: Some("b91c3f1".to_string()),
         });
         assert_eq!(version.to_string(), version_str);
+        assert_eq!(version.partial_cmp(&version), None);
     }
 
     #[test]
