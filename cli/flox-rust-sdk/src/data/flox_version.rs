@@ -95,7 +95,7 @@ impl FromStr for FloxVersion {
             (?:-(?P<pre>(?P<pre_name>[a-zA-Z]+)\.(?P<pre_number>\d+)))? # Optionally match pre-release name and number (e.g., rc.1)
             (?:-(?P<num_of_commits>\d+))?                          # Optionally match number of commits
             (?:-(?P<commit_vcs>[a-z])(?P<commit_sha>[a-f0-9]+))?   # Optionally match VCS and SHA
-        $").unwrap();  // Unwrap is safe here because the regex is a constant
+        $").unwrap(); // Unwrap is safe here because the regex is a constant
 
         // Apply the regex to the version string
         if let Some(captures) = re.captures(version_str) {
