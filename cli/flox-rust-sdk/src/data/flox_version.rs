@@ -188,8 +188,8 @@ impl PartialOrd for FloxVersion {
 
         // Skip commit comparison if there are pre-release fields
         match (self.commit_vcs, other.commit_vcs) {
-            (None, None) => return Some(Ordering::Equal),
-            _ => return None,
+            (None, None) => Some(Ordering::Equal),
+            _ => None,
         }
     }
 }
